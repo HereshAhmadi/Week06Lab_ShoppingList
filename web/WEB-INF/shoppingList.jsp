@@ -4,7 +4,10 @@
     Author     : 699785
 --%>
 
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -25,6 +28,12 @@
         </form>
         
         <p>${message}</p>
+        
+        <ul>
+            <c:forEach items="${itemList}" var="item">
+                <li>item</li>
+            </c:forEach>
+        </ul>
         
         
     </body>
