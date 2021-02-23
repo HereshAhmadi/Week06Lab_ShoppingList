@@ -1,6 +1,7 @@
 package Servlets;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,25 +15,49 @@ public class ShoppingListServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession();
-
-        if (session.getAttribute("username") == null) {
+        if (request.getParameter("action") != null && request.getParameter("action").equals("logout")) {
+            session.invalidate();
             getServletContext().getRequestDispatcher("/WEB-INF/register.jsp").forward(request, response);
-        } else {
+
+        } else if (session.getAttribute("username") != null) {
             getServletContext().getRequestDispatcher("/WEB-INF/shoppingList.jsp").forward(request, response);
+
+        } else {
+            getServletContext().getRequestDispatcher("/WEB-INF/register.jsp").forward(request, response);
         }
+
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        ArrayList<String> itemList = new ArrayList<>();
 
         HttpSession session = request.getSession();
+        String username = request.getParameter("username");
 
-        if (request.getParameter("register") != null) {
-            String username = request.getParameter("username");
-            
-            
+        if (username == null || username.isEmpty()) {
+            request.setAttribute("message", "please enter a username");
+            getServletContext().getRequestDispatcher("/WEB-INF/register.jsp").forward(request, response);
+        }
+
+        if (request.getParameter("action").equals("register")) {
             session.setAttribute("username", username);
+            getServletContext().getRequestDispatcher("/WEB-INF/shoppingList.jsp").forward(request, response);
+
+        }
+
+        if (request.getParameter("action").equals("add")) {
+
+            if (request.getParameter("item") != null && !request.getParameter("item").isEmpty()) {
+                itemList.add(request.getParameter("item"));
+                session.setAttribute("itemList", itemList);
+                getServletContext().getRequestDispatcher("/WEB-INF/shoppingList.jsp").forward(request, response);
+            } else {
+                request.setAttribute("message", "please enter an item");
+                getServletContext().getRequestDispatcher("/WEB-INF/shoppingList.jsp").forward(request, response);
+
+            }
         }
 
     }

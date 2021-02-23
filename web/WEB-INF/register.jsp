@@ -21,5 +21,7 @@
             <input type="submit" value="Register">
             
         </form>
+        
+        <p>${message}</p>
     </body>
 </html>
